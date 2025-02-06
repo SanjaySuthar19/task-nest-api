@@ -8,9 +8,12 @@ import { Response, Task } from './interfaces/task.interface';
 export class TaskService {
   constructor(@Inject('TASK_MODEL') private readonly taskModel: Model<Task>) {}
 
-  async create(createTaskDto: CreateTaskDto): Promise<Response> {
-    const createdTask = this.taskModel.create(createTaskDto);
-    return {status: 201, message: `Created. id: ${(await createdTask)._id}`};
+   async create(createTaskDto: CreateTaskDto): Promise<Response> {
+    if (createTaskDto.title && createTaskDto.status){
+      const createdTask = this.taskModel.create(createTaskDto);
+      return {status: 201, message: `Created. id: ${(await createdTask)._id}`};
+    }
+    return {status: 400, message: `Invalid title or status`};
   }
 
   async findAll(): Promise<Task[]> {
